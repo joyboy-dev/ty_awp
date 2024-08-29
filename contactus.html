@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tours Contact</title>
+</head>
+<body>
+	<!-- Contact Section -->
+	<section style="background-image: linear-gradient(to bottom, #f0f0f0, #fff); padding: 50px; text-align: center;">
+		<h1 style="font-size: 36px; color: #333; text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">Get in Touch</h1>
+		<div class="contact-container" style="display: flex; flex-wrap: wrap; justify-content: center;">
+			<!-- Contact Form -->
+			<div class="contact-form" style="background-color: #fff; margin: 20px; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+				<form>
+					<input type="text" placeholder="Name" style="width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px;">
+					<input type="email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px;">
+					<textarea placeholder="Message" style="width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px;"></textarea>
+					<button style="background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Send</button>
+				</form>
+			</div>
+			<!-- Contact Information -->
+			<div class="contact-info" style="background-color: #fff; margin: 20px; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+				<img src="https://picsum.photos/200/306" alt="Contact Image" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px 10px 0 0;">
+				<h2 style="font-size: 24px; color: #333;">Contact Us</h2>
+				<p style="color: #666;">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+				<p style="color: #666;">Phone: 91-99999-99999</p>
+				<p style="color: #666;">Email: [info@example.com](mailto:info@example.com)</p>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		// JavaScript effects
+		const contactForm = document.querySelector('.contact-form');
+		contactForm.addEventListener('mouseover', () => {
+			contactForm.style.transform = 'scale(1.1)';
+			contactForm.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.2)';
+		});
+		contactForm.addEventListener('mouseout', () => {
+			contactForm.style.transform = 'scale(1)';
+			contactForm.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+		});
+	</script>
+</body>
+</html>

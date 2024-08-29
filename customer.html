@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 650px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .chat-message .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            margin-right: 10px;
+        }
+
+        .chat-message .message-content {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 60%;
+        }
+
+        .chat-suggestions {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .chat-suggestions button {
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .chat-suggestions button:hover {
+            background: #0056b3;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .chat-input button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Customer Support</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="chat-suggestions" id="chat-suggestions">
+            <!-- Suggested messages -->
+            <button>Pricing</button>
+            <button>Booking</button>
+            <button>Availability</button>
+            <button>Discounts</button>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatSuggestions = document.getElementById('chat-suggestions');
+
+        const automatedReplies = {
+    "hello": "Hi there! How can I assist you with your travel plans today?",
+    "hi": "Hello! How can I help you plan your next trip?",
+    "hey": "Hey! What can I do for you today?",
+    "good morning": "Good morning! Ready to plan your next adventure?",
+    "good afternoon": "Good afternoon! How can I assist with your travel needs?",
+    "good evening": "Good evening! Looking to book your next trip?",
+    "how are you": "I'm here and ready to help you with your travel inquiries!",
+    "pricing": "We offer a variety of packages. Could you specify the destination or tour you're interested in?",
+    "cost": "Our travel packages vary by destination and duration. What are you looking for?",
+    "destinations": "We offer tours to many destinations worldwide. Where would you like to go?",
+    "tours": "We have several tours available. Can you tell me what kind of experience you're looking for?",
+    "booking": "You can book directly through our website. Need help with the process?",
+    "availability": "I'll check availability for you. Which destination are you interested in?",
+    "discount": "We offer seasonal discounts! Are you looking for a specific promotion?",
+    "offers": "Check out our latest offers on the homepage. Is there a destination you're interested in?",
+    "packages": "We have several travel packages. Are you looking for something specific?",
+    "support": "Our support team is available 24/7. What can we assist you with?",
+    "thank you": "You're welcome! If you need anything else, just ask.",
+    "flights": "We can help with flight bookings. What’s your departure and destination city?",
+    "accommodation": "We offer a range of accommodations. What’s your budget and preferred type?",
+    "car rental": "We can assist with car rentals. What location and dates do you need?",
+    "cruises": "Interested in a cruise? We have several options. Any specific destination in mind?",
+    "tours for families": "We have family-friendly tours available. How many people will be traveling?",
+    "adventure tours": "Looking for adventure? We have several exciting tours available!",
+    "luxury tours": "Our luxury tours offer the best in comfort and style. Interested in a specific destination?",
+    "group tours": "We offer group tours to various destinations. How many people are in your group?",
+    "honeymoon": "Planning a honeymoon? We have romantic getaway options. Where would you like to go?",
+    "weekend getaway": "Looking for a quick escape? We have weekend getaway packages available.",
+    "last minute": "We have last-minute deals available. Where would you like to travel?",
+    "visa assistance": "Need help with your visa? We can guide you through the process.",
+    "travel insurance": "We offer travel insurance. Would you like more information?",
+    "weather": "I can provide weather updates for your destination. Where are you headed?",
+    "currency": "Need help with currency exchange rates? What country are you traveling to?",
+    "local attractions": "Looking for things to do at your destination? I can suggest some local attractions.",
+    "cancellation": "Need to cancel a booking? Let me assist you with that.",
+    "refund": "I can help you with the refund process. What's your booking reference?",
+    "itinerary": "Need help with your itinerary? I can assist in planning your trip.",
+    "airport transfer": "We can arrange airport transfers. What’s your arrival and departure details?",
+    "budget travel": "Looking for budget-friendly options? Let me find some deals for you.",
+    "luxury travel": "Interested in a luxury experience? We have exclusive packages available.",
+    "family travel": "Planning a family trip? I can suggest some great destinations.",
+    "solo travel": "Traveling alone? Let me help you find the perfect solo adventure.",
+    "couples travel": "Looking for a romantic getaway? I can help you find the perfect spot.",
+    "business travel": "Need assistance with business travel arrangements? Let me help.",
+    "flight delay": "Experiencing a flight delay? I can help you with alternative options.",
+    "luggage": "Need help with luggage guidelines? I can provide the details.",
+    "check-in": "I can assist with online check-in. What’s your flight number?",
+    "passport": "Need help with passport information? I can guide you through the requirements.",
+    "customs": "Have questions about customs regulations? I can provide information.",
+    "transportation": "Need local transportation options? I can suggest some.",
+    "guided tours": "Interested in a guided tour? Let me know your preferences.",
+    "self-guided tours": "Prefer exploring on your own? I can help you plan a self-guided tour.",
+    "cultural tours": "Looking to explore local culture? We have cultural tours available.",
+    "nature tours": "Interested in nature and wildlife? Let me show you some options.",
+    "city tours": "Want to explore a city? I can suggest some city tours.",
+    "day trips": "Looking for a day trip? We have several options available.",
+    "food tours": "Interested in local cuisine? I can recommend some food tours.",
+    "sightseeing": "Need sightseeing suggestions? I can help with that.",
+    "adventure activities": "Looking for adventure? I can suggest some activities.",
+    "beach vacations": "Want to relax on a beach? Let me find the perfect spot for you.",
+    "mountain trips": "Prefer the mountains? I can suggest some destinations.",
+    "desert safaris": "Interested in a desert safari? We have thrilling options available.",
+    "city breaks": "Need a quick city break? I can find some great options for you.",
+    "ski trips": "Looking for a ski trip? I can suggest some destinations.",
+    "cruise packages": "We offer cruise packages to various destinations. Interested?",
+    "train travel": "Looking for a train journey? I can help you with that.",
+    "festival tours": "Interested in attending a festival? I can find tours around it.",
+    "historical tours": "Want to explore history? I can suggest some historical tours.",
+    "shopping tours": "Looking for a shopping spree? I can find the best spots for you.",
+    "wellness retreats": "Need to relax? I can suggest some wellness retreats.",
+    "spa vacations": "Looking for a spa vacation? Let me find the best options for you.",
+    "adventure sports": "Interested in adventure sports? I can suggest some thrilling activities.",
+    "wildlife safaris": "Looking to explore wildlife? I can suggest some safari tours.",
+    "cycling tours": "Interested in a cycling tour? I can help you find the best routes.",
+    "walking tours": "Prefer walking tours? I can suggest some scenic routes.",
+    "nightlife": "Looking for nightlife options? I can suggest the best spots.",
+    "cultural events": "Interested in cultural events? I can find events happening during your trip.",
+    "festival tickets": "Need tickets for a festival? I can help you with that.",
+    "restaurant reservations": "Need a restaurant reservation? I can assist with that.",
+    "local guides": "Looking for a local guide? I can find the best options for you.",
+    "travel tips": "Need travel tips? I’m here to help!",
+    "emergency": "Facing an emergency? Let me assist you with what you need.",
+    "special requests": "Have a special request? Let me know, and I'll do my best to assist!",
+    "child-friendly": "Looking for child-friendly options? I can help you with that.",
+    "pet-friendly": "Need pet-friendly accommodations or tours? I can assist with that.",
+    "accessibility": "Looking for accessible travel options? I can find the best solutions for you.",
+    "eco-friendly": "Interested in eco-friendly travel? I can suggest some options.",
+    "volunteer travel": "Want to volunteer while traveling? I can find opportunities for you.",
+    "custom itineraries": "Need a custom itinerary? Let me help plan your perfect trip.",
+    "returning customer": "Welcome back! How can I assist you today?",
+    "new customer": "Welcome! How can I help you start your travel journey?",
+    "loyalty program": "Interested in our loyalty program? I can provide details.",
+    "feedback": "We value your feedback. Please share your thoughts!",
+    "default": "Thank you for your message. How can I assist you further?"
+};
+
+        function getAutomatedReply(message) {
+            const lowerCaseMessage = message.toLowerCase();
+            for (const [key, reply] of Object.entries(automatedReplies)) {
+                if (lowerCaseMessage.includes(key)) {
+                    return reply;
+                }
+            }
+            return automatedReplies["default"];
+        }
+
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                addMessageToChat(message, 'user');
+                messageInput.value = '';
+                sendAutomatedReply(message);
+            }
+        });
+
+        chatSuggestions.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const suggestion = e.target.textContent.trim();
+                messageInput.value = suggestion;
+            }
+        });
+
+        function addMessageToChat(message, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.innerHTML = `
+                <div class="avatar" style="background: ${sender === 'user' ? '#ddd' : '#007bff'};"></div>
+                <div class="message-content">${message}</div>
+            `;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendAutomatedReply(message) {
+            setTimeout(() => {
+                const reply = getAutomatedReply(message);
+                addMessageToChat(reply, 'bot');
+            }, 1000); // 1 second delay for the automated reply
+        }
+    </script>
+</body>
+</html>
